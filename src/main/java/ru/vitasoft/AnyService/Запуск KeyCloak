@@ -1,0 +1,23 @@
+Открыть в консоли C:\Users\slavrinenko\Downloads\keycloak-23.0.1\keycloak-23.0.1\bin
+Запустить kc.bat start-dev
+На 8080 порту запустится менеджер KeyCloak
+Для входа adminIya admin
+Тест в царстве (realm) PersonalCabinetTest
+
+
+----------------------------------------------
+Полезные ссылки:
+
+0) https://codewithbisky.com/spring-boot-integration-blogs/ep10.html
+0.1) https://www.keycloak.org/docs-api/23.0.4/rest-api/index.html
+
+----------------------------------------------
+
+1) https://habr.com/ru/companies/alfastrah/articles/651861/
+2) https://www.keycloak.org/docs/latest/securing_apps/#_spring_security_adapter
+3) http://localhost:8080/admin/master/console/#/PersonalCabinetTest/client-scopes
+4) https://gist.github.com/thomasdarimont/52152ed68486c65b50a04fcf7bd9bbde
+5) https://for-each.dev/lessons/b/-spring-keycloak-get-user-id !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+6) https://github.com/sventorben/keycloak-restrict-client-auth/blob/main/src/main/java/de/sventorben/keycloak/authorization/client/access/AccessProvider.java
+7) https://www.youtube.com/watch?v=IYAI1gEUVfw
+8) https://gitlab.com/code-with-bisky/spring-boot-third-party-integrations/-/tree/main/src/main/java/com/code/with/bisky/service/keycloak?ref_type=heads
