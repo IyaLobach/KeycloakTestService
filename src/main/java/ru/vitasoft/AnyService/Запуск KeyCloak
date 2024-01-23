@@ -10,6 +10,21 @@
 
 0) https://codewithbisky.com/spring-boot-integration-blogs/ep10.html
 0.1) https://www.keycloak.org/docs-api/23.0.4/rest-api/index.html
+0.2) https://www.youtube.com/playlist?list=PLcIawvbCElnTxrGqfYI65G9fTGwIu26mM
+0.3) https://www.baeldung.com/java-keycloak-search-users
+
+0.2) https://quarkus.io/guides/security-keycloak-admin-client  !!!!!!!!
+0.3) https://www.keycloak.org/docs/latest/server_development/#example-using-java   !!!!!!!!!!!!!!!
+
+
+https://javadoc.io/doc/org.keycloak/keycloak-admin-client/latest/index.html документация
+
+--------------------------------------------
+
+Подключение к БД:
+
+0) https://www.keycloak.org/server/db
+1) https://dzen.ru/a/YZNTzAPmAEQGcpOA
 
 ----------------------------------------------
 
