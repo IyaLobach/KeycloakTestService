@@ -10,4 +10,5 @@ public interface KeyCloakUserI {
     UserRepresentation getUserById(String userId);
     void deleteUserById(String userId);
     UserResource getUserResource(String userId);
+    void forgotPassword(String username);
 }

@@ -34,7 +34,11 @@ public class UserController {
         return HttpStatus.OK;
     }
 
-
+    @PutMapping("/{username}")
+    public HttpStatus updatePassword(@PathVariable String username) {
+        keycloakUserService.forgotPassword(username);
+        return HttpStatus.OK;
+    }
 
 
 }

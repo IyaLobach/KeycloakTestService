@@ -14,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 import ru.vitasoft.AnyService.dto.UserRegistrationRecord;
 import ru.vitasoft.AnyService.services.interfaces.KeyCloakUserI;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,6 +25,7 @@ public class KeycloakUserService implements KeyCloakUserI {
 
     private final Keycloak keycloak;
     private final String realm = "PersonalCabinetTest";
+    private final String UPDATE_PASSWORD = "UPDATE_PASSWORD";
 
 
     @Override
@@ -90,5 +92,20 @@ public class KeycloakUserService implements KeyCloakUserI {
     public UserResource getUserResource(String userId) {
         UsersResource usersResource = getUsersResource();
         return usersResource.get(userId);
+    }
+
+    @Override
+    public void forgotPassword(String username) {
+        UsersResource usersResource = getUsersResource();
+        List<UserRepresentation> representationList = usersResource.searchByUsername(username, true);
+
+        UserRepresentation userRepresentation = representationList.stream().findFirst().orElse(null);
+
+        if (userRepresentation != null) {
+            UserResource userResource = usersResource.get(userRepresentation.getId());
+            List<String> actions = new ArrayList<>();
+            actions.add(UPDATE_PASSWORD);
+            userResource.executeActionsEmail(actions);
+        }
     }
 }
