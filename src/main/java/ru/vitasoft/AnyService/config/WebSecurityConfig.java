@@ -22,8 +22,9 @@ public class WebSecurityConfig {
 
         return httpSecurity
                 .authorizeHttpRequests(auth -> auth
-                        .antMatchers("/test/employee/**").hasRole("USER")
-                        .antMatchers("/test/operator/**").hasRole("ADMIN")
+//                        .antMatchers("/test/employee/**").hasRole("USER")
+//                        .antMatchers("/test/operator/**").hasRole("ADMIN")
+//                        .antMatchers("/user/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2

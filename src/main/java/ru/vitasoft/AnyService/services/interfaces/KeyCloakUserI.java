@@ -1,11 +1,13 @@
-package ru.vitasoft.AnyService.services;
+package ru.vitasoft.AnyService.services.interfaces;
 
+import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.idm.UserRepresentation;
 import ru.vitasoft.AnyService.dto.UserRegistrationRecord;
 
 public interface KeyCloakUserI {
 
-    UserRegistrationRecord createUser(String username, String email, String lastName, String firstName, String password);
+    UserRegistrationRecord createUser(UserRegistrationRecord user);
     UserRepresentation getUserById(String userId);
     void deleteUserById(String userId);
+    UserResource getUserResource(String userId);
 }

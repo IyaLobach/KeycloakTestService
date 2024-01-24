@@ -5,11 +5,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import ru.vitasoft.AnyService.dto.UserRegistrationRecord;
+import ru.vitasoft.AnyService.services.interfaces.KeyCloakUserI;
 
 import java.util.List;
 import java.util.Objects;
@@ -24,18 +27,19 @@ public class KeycloakUserService implements KeyCloakUserI {
 
 
     @Override
-    public UserRegistrationRecord createUser(String username, String email, String lastName, String firstName, String password) {
+    public UserRegistrationRecord createUser(UserRegistrationRecord user) {
         // создание нового пользователя
         UserRepresentation userRepresentation = new UserRepresentation();
         userRepresentation.setEnabled(true);
-        userRepresentation.setEmail(email);
+        userRepresentation.setUsername(user.getUsername());
+        userRepresentation.setEmail(user.getEmail());
         userRepresentation.setEmailVerified(true);
-        userRepresentation.setFirstName(firstName);
-        userRepresentation.setLastName(lastName);
+        userRepresentation.setFirstName(user.getFirstName());
+        userRepresentation.setLastName(user.getLastName());
 
         // учетные данные
         CredentialRepresentation credentialRepresentation = new CredentialRepresentation();
-        credentialRepresentation.setValue(password);
+        credentialRepresentation.setValue(user.getPassword());
         credentialRepresentation.setTemporary(false);
         credentialRepresentation.setType(CredentialRepresentation.PASSWORD);
 
@@ -51,16 +55,14 @@ public class KeycloakUserService implements KeyCloakUserI {
         Response response = usersResource.create(userRepresentation);
 
         if (Objects.equals(201, response.getStatus())) {
-            return UserRegistrationRecord.builder()
-                    .email(email)
-                    .firstName(firstName)
-                    .lastName(lastName)
-                    .password(password)
-                    .username(username)
-                    .build();
+            List<UserRepresentation> representationList = usersResource.searchByUsername(user.getUsername(), true);
+            if (!CollectionUtils.isEmpty(representationList)) {
+                UserRepresentation userRepresentation1 = representationList.stream().filter(userRepresentationn -> Objects.equals(false, userRepresentationn.isEmailVerified())).findFirst().orElse(null);
+                emailVerification(userRepresentation1.getId());
+            }
         }
 
-        return null;
+        return user;
     }
 
     public UsersResource getUsersResource() {
@@ -77,5 +79,16 @@ public class KeycloakUserService implements KeyCloakUserI {
     @Override
     public void deleteUserById(String userId) {
         getUsersResource().delete(userId);
+    }
+
+    public void emailVerification(String userId) {
+        UsersResource usersResource = getUsersResource();
+        usersResource.get(userId).sendVerifyEmail();
+    }
+
+    @Override
+    public UserResource getUserResource(String userId) {
+        UsersResource usersResource = getUsersResource();
+        return usersResource.get(userId);
     }
 }
