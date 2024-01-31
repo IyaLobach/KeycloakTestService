@@ -14,6 +14,7 @@ public class AnyServiceApplication {
 		SpringApplication.run(AnyServiceApplication.class, args);
 	}
 
+	// креды сервиса
 	@Bean
 	public Keycloak keycloak() {
 		return KeycloakBuilder.builder()
