@@ -21,7 +21,7 @@ public class AnyServiceApplication {
 				.realm("PersonalCabinetTest")
 				.grantType(OAuth2Constants.CLIENT_CREDENTIALS)
 				.clientId("AnyServiceApi")
-				.clientSecret("9jqJysANERPdRC1JW6XdCHa9V7Rt64Vl")
+				.clientSecret("bjV547DgTBZznSBAbbjcGiJMjiSBDYJR")
 				.build();
 	}
 

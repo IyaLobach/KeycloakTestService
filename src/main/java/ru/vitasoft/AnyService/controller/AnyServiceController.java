@@ -23,11 +23,13 @@ import java.util.Collections;
 @RequestMapping("test")
 public class AnyServiceController {
 
+    // работает с токеном клиента
     @GetMapping("/all")
     public String hello3() {
         return "Hello from TestController - all";
     }
 
+    // работает с токеном клиента
     @GetMapping("/operator")
     public ResponseEntity<String> hello(Principal principal) {
         JwtAuthenticationToken token = (JwtAuthenticationToken) principal;
@@ -36,6 +38,7 @@ public class AnyServiceController {
         return ResponseEntity.ok("Hello from TestController - operator \nUser Name : " + userName + "\nUser Email : " + userEmail);
     }
 
+    // работает с токеном клиента
     @GetMapping("/employee")
     public ResponseEntity<String> hello2(Principal principal) {
         JwtAuthenticationToken token = (JwtAuthenticationToken) principal;

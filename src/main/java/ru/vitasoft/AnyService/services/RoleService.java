@@ -18,6 +18,8 @@ public class RoleService implements RoleServiceI {
     private final Keycloak keycloak;
     private final String realm = "PersonalCabinetTest";
     private final KeycloakUserService keycloakUserService;
+
+
     @Override
     public void assertRole(String userId, String roleName) {
         UserResource userResource = keycloakUserService.getUserResource(userId);

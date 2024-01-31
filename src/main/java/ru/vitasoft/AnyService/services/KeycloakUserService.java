@@ -105,7 +105,14 @@ public class KeycloakUserService implements KeyCloakUserI {
             UserResource userResource = usersResource.get(userRepresentation.getId());
             List<String> actions = new ArrayList<>();
             actions.add(UPDATE_PASSWORD);
+            // вот тут падает
             userResource.executeActionsEmail(actions);
         }
+    }
+
+    @Override
+    public List<UserRepresentation> getUserByUsername(String username) {
+        UsersResource usersResource = getUsersResource();
+        return usersResource.searchByUsername(username, true);
     }
 }
