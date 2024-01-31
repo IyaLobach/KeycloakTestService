@@ -24,13 +24,13 @@ public class UserController {
         return keycloakUserService.createUser(user);
     }
 
-    // работает с токеном клиента
+    // работает с токеном юзера
     @GetMapping
     public UserRepresentation getUser(Principal principal) {
         return keycloakUserService.getUserById(principal.getName());
     }
 
-    // работает c токеном клиента
+    // работает c токеном сервиса
     @DeleteMapping("/{userId}")
     public HttpStatus deleteUser(@PathVariable String userId) {
         keycloakUserService.deleteUserById(userId);
