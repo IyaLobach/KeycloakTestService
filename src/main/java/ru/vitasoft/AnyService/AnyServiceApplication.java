@@ -7,6 +7,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.security.Key;
+
 @SpringBootApplication
 public class AnyServiceApplication {
 
@@ -25,5 +27,7 @@ public class AnyServiceApplication {
 				.clientSecret("bjV547DgTBZznSBAbbjcGiJMjiSBDYJR")
 				.build();
 	}
+
+
 
 }

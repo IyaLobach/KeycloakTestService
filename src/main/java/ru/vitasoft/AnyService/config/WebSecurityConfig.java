@@ -19,13 +19,11 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
-
         return httpSecurity
-                .authorizeHttpRequests(auth -> auth
-//                        .antMatchers("/test/employee/**").hasRole("USER")
-//                        .antMatchers("/test/operator/**").hasRole("ADMIN")
-//                        .antMatchers("/user/**").permitAll()
-                        .anyRequest().authenticated()
+                .authorizeHttpRequests(requests -> requests
+                        .requestMatchers("/test/employee/**").hasRole("EMPLOYEE")
+                        .requestMatchers("/test/operator/**").hasRole("OPERATOR")
+                        .requestMatchers("/test/auth/**", "/test/all/**").permitAll()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt

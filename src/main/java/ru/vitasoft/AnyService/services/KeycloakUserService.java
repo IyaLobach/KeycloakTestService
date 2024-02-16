@@ -3,10 +3,13 @@ package ru.vitasoft.AnyService.services;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,7 @@ import ru.vitasoft.AnyService.dto.UserRegistrationRecord;
 import ru.vitasoft.AnyService.services.interfaces.KeyCloakUserI;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -53,6 +57,7 @@ public class KeycloakUserService implements KeyCloakUserI {
         RealmResource realm1 = keycloak.realm(this.realm);
         UsersResource usersResource = realm1.users();
 
+
         // сохранение нового пользователя
         Response response = usersResource.create(userRepresentation);
 
@@ -65,6 +70,20 @@ public class KeycloakUserService implements KeyCloakUserI {
         }
 
         return user;
+    }
+
+
+    public String checkUser(String username, String password) {
+       Keycloak user = KeycloakBuilder.builder()
+               .serverUrl("http://localhost:8080")
+               .realm("PersonalCabinetTest")
+               .clientId("AnyServiceApi")
+               .clientSecret("bjV547DgTBZznSBAbbjcGiJMjiSBDYJR")
+               .username(username)
+               .password(password)
+               .build();
+
+       return user.tokenManager().getAccessTokenString();
     }
 
     public UsersResource getUsersResource() {
@@ -112,6 +131,13 @@ public class KeycloakUserService implements KeyCloakUserI {
 
     @Override
     public List<UserRepresentation> getUserByUsername(String username) {
+        // получить токен сервиса
+        String token = keycloak.tokenManager().getAccessTokenString();
+        // обновить токен сервиса
+        AccessTokenResponse refreshToken = keycloak.tokenManager().refreshToken();
+
+
+
         UsersResource usersResource = getUsersResource();
         return usersResource.searchByUsername(username, true);
     }
