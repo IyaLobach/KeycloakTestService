@@ -23,6 +23,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/test/employee/**").hasRole("EMPLOYEE")
                         .requestMatchers("/test/operator/**").hasRole("OPERATOR")
+                        .requestMatchers("/user/**", "/role/**").authenticated()
                         .requestMatchers("/test/auth/**", "/test/all/**").permitAll()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
