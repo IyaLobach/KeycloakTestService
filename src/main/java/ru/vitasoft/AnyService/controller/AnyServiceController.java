@@ -1,5 +1,7 @@
 package ru.vitasoft.AnyService.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
@@ -26,8 +28,12 @@ public class AnyServiceController {
 
    // РАБОТАЕТ
     @GetMapping("/auth")
-    public String hello3(@RequestParam String password, @RequestParam String username) {
-        return "Auth user token  " +    keycloakUserService.checkUser(username, password);
+    public String hello3(@RequestParam String password, @RequestParam String username, HttpServletResponse response) {
+        String authToken = keycloakUserService.checkUser(username, password);
+        Cookie cookie = new Cookie("IYA", authToken);
+        cookie.setPath("/"); // Устанавливаем путь куки
+        response.addCookie(cookie);
+        return "Auth user token  " + authToken;
     }
 
     @GetMapping("/all")

@@ -92,6 +92,7 @@ public class KeycloakUserService implements KeyCloakUserI {
     }
 
 
+    // !!!!!
     @Override
     public UserRepresentation getUserById(String userId) {
         return getUsersResource().get(userId).toRepresentation();
