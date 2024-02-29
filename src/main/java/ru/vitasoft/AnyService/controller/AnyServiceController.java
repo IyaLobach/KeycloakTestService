@@ -43,21 +43,21 @@ public class AnyServiceController {
 
     // работает с токеном клиента
     @GetMapping("/operator")
-    public ResponseEntity<String> hello(Principal principal) {
+    public String hello(Principal principal) {
         JwtAuthenticationToken token = (JwtAuthenticationToken) principal;
 
         String userName = (String) token.getTokenAttributes().get("name");
         String userEmail = (String) token.getTokenAttributes().get("email");
-        return ResponseEntity.ok("Hello from TestController - operator \nUser Name : " + userName + "\nUser Email : " + userEmail);
+        return "Hello from TestController - operator \nUser Name : " + userName + "\nUser Email : " + userEmail;
     }
 
     // работает с токеном клиента
     @GetMapping("/employee")
-    public ResponseEntity<String> hello2(Principal principal) {
+    public String hello2(Principal principal) {
         JwtAuthenticationToken token = (JwtAuthenticationToken) principal;
         String userName = (String) token.getTokenAttributes().get("name");
         String userEmail = (String) token.getTokenAttributes().get("email");
-        return ResponseEntity.ok("Hello from TestController - employee \nUser Name : " + userName + "\nUser Email : " + userEmail);
+        return "Hello from TestController - employee \nUser Name : " + userName + "\nUser Email : " + userEmail;
     }
 
 }

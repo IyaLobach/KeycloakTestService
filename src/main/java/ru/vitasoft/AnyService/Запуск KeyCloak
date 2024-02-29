@@ -39,4 +39,10 @@ https://javadoc.io/doc/org.keycloak/keycloak-admin-client/latest/index.html до
 8) https://gitlab.com/code-with-bisky/spring-boot-third-party-integrations/-/tree/main/src/main/java/com/code/with/bisky/service/keycloak?ref_type=heads
 
 
+!!! Keycloak token exchange across clients !!!!!!!!!!!
+https://medium.com/geekculture/token-exchange-using-keycloak-204da039b5e6
+Tutorial 2 - Configuring Token Exchange using the CLI.html
+https://technicqa.com/how-to-create-token-exchange-policy-in-keycloak/
 
+
+https://medium.com/@antonio_berben/sso-multiple-identity-providers-with-keycloak-tutorial-ca293b835474
