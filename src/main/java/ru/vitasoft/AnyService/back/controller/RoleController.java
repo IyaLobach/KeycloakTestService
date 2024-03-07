@@ -1,8 +1,8 @@
-package ru.vitasoft.AnyService.controller;
+package ru.vitasoft.AnyService.back.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.vitasoft.AnyService.services.RoleService;
+import ru.vitasoft.AnyService.back.services.RoleService;
 
 @RestController
 @RequestMapping("role")

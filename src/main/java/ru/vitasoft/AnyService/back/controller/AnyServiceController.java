@@ -1,18 +1,11 @@
-package ru.vitasoft.AnyService.controller;
+package ru.vitasoft.AnyService.back.controller;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.keycloak.OAuth2Constants;
-import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.KeycloakBuilder;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.vitasoft.AnyService.services.KeycloakUserService;
+import ru.vitasoft.AnyService.back.services.KeycloakUserService;
 
 import java.security.Principal;
 
@@ -25,16 +18,6 @@ public class AnyServiceController {
 
    private final KeycloakUserService keycloakUserService;
 
-
-   // РАБОТАЕТ
-    @GetMapping("/auth")
-    public String hello3(@RequestParam String password, @RequestParam String username, HttpServletResponse response) {
-        String authToken = keycloakUserService.checkUser(username, password);
-        Cookie cookie = new Cookie("IYA", authToken);
-        cookie.setPath("/"); // Устанавливаем путь куки
-        response.addCookie(cookie);
-        return "Auth user token  " + authToken;
-    }
 
     @GetMapping("/all")
     public String hello4() {

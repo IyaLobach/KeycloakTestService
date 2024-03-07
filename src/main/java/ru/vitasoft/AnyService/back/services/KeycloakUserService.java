@@ -1,9 +1,8 @@
-package ru.vitasoft.AnyService.services;
+package ru.vitasoft.AnyService.back.services;
 
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
@@ -14,11 +13,10 @@ import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import ru.vitasoft.AnyService.dto.UserRegistrationRecord;
-import ru.vitasoft.AnyService.services.interfaces.KeyCloakUserI;
+import ru.vitasoft.AnyService.back.dto.UserRegistrationRecord;
+import ru.vitasoft.AnyService.back.services.interfaces.KeyCloakUserI;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 

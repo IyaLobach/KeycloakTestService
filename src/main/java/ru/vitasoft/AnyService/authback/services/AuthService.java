@@ -7,7 +7,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 @Service
-@PropertySource("classpath:application-authback.properties")
 public class AuthService {
 
     @Value("${keycloak.auth-server-url}")

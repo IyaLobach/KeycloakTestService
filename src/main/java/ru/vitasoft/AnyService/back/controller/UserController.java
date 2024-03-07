@@ -1,11 +1,11 @@
-package ru.vitasoft.AnyService.controller;
+package ru.vitasoft.AnyService.back.controller;
 
 import lombok.AllArgsConstructor;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.vitasoft.AnyService.dto.UserRegistrationRecord;
-import ru.vitasoft.AnyService.services.KeycloakUserService;
+import ru.vitasoft.AnyService.back.dto.UserRegistrationRecord;
+import ru.vitasoft.AnyService.back.services.KeycloakUserService;
 
 import java.security.Principal;
 import java.util.List;

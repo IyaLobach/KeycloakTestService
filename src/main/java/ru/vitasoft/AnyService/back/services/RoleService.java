@@ -1,13 +1,12 @@
-package ru.vitasoft.AnyService.services;
+package ru.vitasoft.AnyService.back.services;
 
 import lombok.RequiredArgsConstructor;
 import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.resource.RoleResource;
 import org.keycloak.admin.client.resource.RolesResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.springframework.stereotype.Service;
-import ru.vitasoft.AnyService.services.interfaces.RoleServiceI;
+import ru.vitasoft.AnyService.back.services.interfaces.RoleServiceI;
 
 import java.util.Collections;
 

@@ -1,5 +1,7 @@
 package ru.vitasoft.AnyService.config;
 
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jwt.JWTClaimsSet;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -11,25 +13,42 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.stereotype.Component;
 
+import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.nimbusds.jwt.*;
+
 @Component
-public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationToken> {
+public class TokenConverter implements Converter<String, AbstractAuthenticationToken> {
 
     private final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
 
-    @Value("${jwt.auth.converter.resource-id}")
-    private String resourceId;
-
+    @Value("${keycloak.client-id}")
+    private String clientId;
 
     @Override
-    public AbstractAuthenticationToken convert(Jwt jwt) {
-        Collection<GrantedAuthority> authorities = Stream.concat(
-                jwtGrantedAuthoritiesConverter.convert(jwt).stream(),
-                extractResourceRoles(jwt).stream()).collect(Collectors.toSet());
-        return new JwtAuthenticationToken(jwt, authorities, getPrincipalClaimName(jwt));
+    public AbstractAuthenticationToken convert(String token) {
+        try {
+            Jwt jwt = parseJwt(token);
+            Collection<GrantedAuthority> authorities = Stream.concat(
+                    jwtGrantedAuthoritiesConverter.convert(jwt).stream(),
+                    extractResourceRoles(jwt).stream()).collect(Collectors.toSet());
+            return new JwtAuthenticationToken(jwt, authorities, getPrincipalClaimName(jwt));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Jwt parseJwt(String token) throws ParseException {
+        SignedJWT signedJWT = SignedJWT.parse(token);
+        JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
+        Map<String, Object> claims = claimsSet.getClaims();
+        JWSHeader headers = signedJWT.getHeader();
+        return new Jwt(token, null, null, headers.toJSONObject(), claimsSet.getClaims());
     }
 
     private String getPrincipalClaimName(Jwt jwt) {
@@ -39,37 +58,17 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
 
     private Collection<? extends GrantedAuthority> extractResourceRoles(Jwt jwt) {
 
-        Map<String, Object> realmAccess = jwt.getClaim("realm_access");
         Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
 
         Collection<String> allRoles = new ArrayList<>();
         Collection<String> resourceRoles;
-        Collection<String> realmRoles ;
 
-//        if(resourceAccess != null && resourceAccess.get("account") != null){
-//            Map<String,Object> account =  (Map<String,Object>) resourceAccess.get("account");
-//            if(account.containsKey("roles") ){
-//                resourceRoles = (Collection<String>) account.get("roles");
-//                allRoles.addAll(resourceRoles);
-//            }
-//        }
-
-
-        if(resourceAccess != null){
-            Map<String,Object> account =  (Map<String,Object>) resourceAccess.get("AnyServiceApi");
-            if(account.containsKey("roles") ){
+        if (resourceAccess != null) {
+            Map<String, Object> account = (Map<String, Object>) resourceAccess.get(clientId);
+            if (account.containsKey("roles")) {
                 resourceRoles = (Collection<String>) account.get("roles");
                 allRoles.addAll(resourceRoles);
             }
-        }
-
-        if(realmAccess != null && realmAccess.containsKey("roles")){
-            realmRoles = (Collection<String>) realmAccess.get("roles");
-            allRoles.addAll(realmRoles);
-        }
-        if (allRoles.isEmpty() || !Objects.equals(resourceId,jwt.getClaim("azp")) ) {
-
-            return Set.of();
         }
 
         return allRoles.stream()

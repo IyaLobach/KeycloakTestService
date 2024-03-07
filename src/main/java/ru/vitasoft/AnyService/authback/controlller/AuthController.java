@@ -8,15 +8,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.vitasoft.AnyService.authback.services.AuthService;
-import ru.vitasoft.AnyService.services.KeycloakUserService;
+
 
 @RestController
-@RequestMapping("auth")
+@RequestMapping("authback")
 @AllArgsConstructor
 public class AuthController {
 
     private final AuthService authService;
-    @GetMapping()
+    @GetMapping("/login")
     public String auth(@RequestParam String password, @RequestParam String username, HttpServletResponse response) {
         String authToken = authService.auth(username, password);
         Cookie cookie = new Cookie("IYA", authToken);
