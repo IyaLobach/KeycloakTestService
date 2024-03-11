@@ -1,4 +1,4 @@
-package ru.vitasoft.AnyService.config;
+package ru.vitasoft.AnyService.back.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.FilterChain;
@@ -10,6 +10,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import ru.vitasoft.AnyService.config.TokenConverter;
+
 import java.io.IOException;
 import static org.springframework.http.HttpHeaders.COOKIE;
 import static org.springframework.util.StringUtils.hasText;

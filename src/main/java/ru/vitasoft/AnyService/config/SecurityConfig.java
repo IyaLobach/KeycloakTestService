@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import ru.vitasoft.AnyService.back.config.JwtFilter;
 
 @RequiredArgsConstructor
 @Configuration
@@ -23,11 +24,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/test/operator/**").hasRole("OPERATOR")
                         .requestMatchers("/test/employee/**").hasRole("EMPLOYEE")
-                        .requestMatchers("/authback/login/**", "/test/all/**").permitAll()
+                        .requestMatchers("/authback/**", "/test/all/**").permitAll()
                         .anyRequest().fullyAuthenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                //.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
