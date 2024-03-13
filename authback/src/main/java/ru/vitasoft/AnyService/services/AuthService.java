@@ -2,26 +2,23 @@ package ru.vitasoft.AnyService.services;
 
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
-import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
-import org.keycloak.admin.client.resource.RealmResource;
-import org.keycloak.admin.client.resource.RolesResource;
-import org.keycloak.admin.client.resource.UserResource;
-import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.admin.client.resource.*;
+import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import ru.vitasoft.AnyService.config.JwtProvider;
+import ru.vitasoft.AnyService.exception.CustomConflictException;
 import ru.vitasoft.AnyService.model.User;
-import ru.vitasoft.AnyService.model.dto.UserRegistrationRecord;
+import ru.vitasoft.AnyService.model.dto.UserDto;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -45,6 +42,8 @@ public class AuthService {
 
     private final JwtProvider jwtProvider;
     private final Keycloak keycloak;
+    private final static String DEFAULT_ROLE = "ROLE_EMPLOYEE";
+    private final static String UPDATE_PASSWORD = "UPDATE_PASSWORD";
 
     public void auth(String username, String password) {
         Keycloak user = KeycloakBuilder.builder()
@@ -67,7 +66,7 @@ public class AuthService {
                 .build();
     }
 
-    public void registration(UserRegistrationRecord user) {
+    public void registration(UserDto user) {
 
 
         UserRepresentation userRepresentation = new UserRepresentation();
@@ -97,11 +96,10 @@ public class AuthService {
         Response response = usersResource.create(userRepresentation);
 
         if (Objects.equals(201, response.getStatus())) {
-            List<UserRepresentation> representationList = usersResource.searchByUsername(user.getUsername(), true);
-            if (!CollectionUtils.isEmpty(representationList)) {
-                UserRepresentation userRepresentation1 = representationList.stream().filter(userRepresentationn -> Objects.equals(false, userRepresentationn.isEmailVerified())).findFirst().orElse(null);
-                emailVerification(userRepresentation1.getId());
-            }
+            emailVerification(userRepresentation.getId());
+            assertRole(userRepresentation.getId(), DEFAULT_ROLE);
+        } else {
+            throw new CustomConflictException("Пользователь с таким именем уже существует");
         }
     }
 
@@ -110,11 +108,18 @@ public class AuthService {
 
         RolesResource rolesResource = getRoleResource();
         RoleRepresentation roleRepresentation = rolesResource.get(roleName).toRepresentation();
-        userResource.roles().realmLevel().add(Collections.singletonList(roleRepresentation));
+        ClientRepresentation service = keycloak.realm(this.realm).clients().findByClientId(clientId).get(0);
+        userResource.roles().clientLevel(service.getId()).add(Collections.singletonList(roleRepresentation));
     }
 
     private RolesResource getRoleResource() {
-        return keycloak.realm(this.realm).roles();
+        ClientRepresentation service = keycloak.realm(this.realm).clients().findByClientId(clientId).get(0);
+        ClientResource clientResource = keycloak.realm(this.realm).clients().get(service.getId());
+        return clientResource.roles();
+    }
+
+    public UserRepresentation getUserById(String userId) {
+        return getUsersResource().get(userId).toRepresentation();
     }
 
     private UsersResource getUsersResource() {
@@ -131,4 +136,20 @@ public class AuthService {
         UsersResource usersResource = getUsersResource();
         usersResource.get(userId).sendVerifyEmail();
     }
+
+    public void forgotPassword(String userId) {
+        UserRepresentation userRepresentation = getUserById(userId);
+        if (userRepresentation != null) {
+            UserResource userResource = getUsersResource().get(userRepresentation.getId());
+            List<String> actions = new ArrayList<>();
+            actions.add(UPDATE_PASSWORD);
+            userResource.executeActionsEmail(actions);
+        }
+    }
+
+    public List<UserRepresentation> getUsersByEmail(String email) {
+        UsersResource usersResource = getUsersResource();
+        return usersResource.searchByEmail(email, true);
+    }
+
 }

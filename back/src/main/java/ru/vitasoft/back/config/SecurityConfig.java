@@ -23,7 +23,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/test/operator/**").hasRole("OPERATOR")
                         .requestMatchers("/test/employee/**").hasRole("EMPLOYEE")
-                        .requestMatchers("/authback/**", "/test/all/**").permitAll()
+                        .requestMatchers( "/test/all/**").permitAll()
                         .anyRequest().fullyAuthenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

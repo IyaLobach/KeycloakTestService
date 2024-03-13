@@ -32,7 +32,7 @@ public class AnyServiceApplication {
 	}
 
     @Bean
-    public Keycloak service() {
+    public Keycloak keycloak() {
         return KeycloakBuilder.builder()
                 .serverUrl(serverUrl)
                 .realm(realm)
