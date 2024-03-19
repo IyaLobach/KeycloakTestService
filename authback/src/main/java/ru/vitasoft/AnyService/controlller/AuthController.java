@@ -58,6 +58,11 @@ public class AuthController {
         authService.assertRole(userDto.getId(), userDto.getRole());
     }
 
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello";
+    }
+
 
 
 

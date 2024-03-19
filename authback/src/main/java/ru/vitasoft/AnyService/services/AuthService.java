@@ -44,6 +44,7 @@ public class AuthService {
     private final Keycloak keycloak;
     private final static String DEFAULT_ROLE = "ROLE_EMPLOYEE";
     private final static String UPDATE_PASSWORD = "UPDATE_PASSWORD";
+    private final static String REDIRECT_URI = "http://localhost:8085/authback/hello";
 
     public void auth(String username, String password) {
         Keycloak user = KeycloakBuilder.builder()
@@ -133,8 +134,8 @@ public class AuthService {
     }
 
     public void emailVerification(String userId) {
-        UsersResource usersResource = getUsersResource();
-        usersResource.get(userId).sendVerifyEmail();
+        UserResource userResource = getUsersResource().get(userId);
+        userResource.sendVerifyEmail(clientId, REDIRECT_URI);
     }
 
     public void forgotPassword(String userId) {
@@ -143,7 +144,7 @@ public class AuthService {
             UserResource userResource = getUsersResource().get(userRepresentation.getId());
             List<String> actions = new ArrayList<>();
             actions.add(UPDATE_PASSWORD);
-            userResource.executeActionsEmail(actions);
+            userResource.executeActionsEmail(clientId, REDIRECT_URI, actions);
         }
     }
 

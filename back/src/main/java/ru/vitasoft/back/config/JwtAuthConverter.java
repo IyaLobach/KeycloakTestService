@@ -1,9 +1,8 @@
 package ru.vitasoft.back.config;
 
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,7 +13,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.stereotype.Component;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -22,34 +20,21 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
-public class TokenConverter implements Converter<String, AbstractAuthenticationToken> {
+@PropertySource("classpath:application-back.properties")
+public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
     private final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
 
     @Value("${keycloak.client-id}")
     private String clientId;
 
-    @Override
-    public AbstractAuthenticationToken convert(String token) {
-        try {
-            Jwt jwt = parseJwt(token);
-            Collection<GrantedAuthority> authorities = Stream.concat(
-                    jwtGrantedAuthoritiesConverter.convert(jwt).stream(),
-                    extractResourceRoles(jwt).stream()).collect(Collectors.toSet());
-            return new JwtAuthenticationToken(jwt, authorities, getPrincipalClaimName(jwt));
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
-    }
 
-    private Jwt parseJwt(String token) throws ParseException {
-        SignedJWT signedJWT = SignedJWT.parse(token);
-        JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
-        Map<String, Object> claims = claimsSet.getClaims();
-        JWSHeader headers = signedJWT.getHeader();
-        return new Jwt(token, null, null, headers.toJSONObject(), claimsSet.getClaims());
+    @Override
+    public AbstractAuthenticationToken convert(Jwt jwt) {
+        Collection<GrantedAuthority> authorities = Stream.concat(
+                jwtGrantedAuthoritiesConverter.convert(jwt).stream(),
+                extractResourceRoles(jwt).stream()).collect(Collectors.toSet());
+        return new JwtAuthenticationToken(jwt, authorities, getPrincipalClaimName(jwt));
     }
 
     private String getPrincipalClaimName(Jwt jwt) {
@@ -64,9 +49,9 @@ public class TokenConverter implements Converter<String, AbstractAuthenticationT
         Collection<String> allRoles = new ArrayList<>();
         Collection<String> resourceRoles;
 
-        if (resourceAccess != null) {
-            Map<String, Object> account = (Map<String, Object>) resourceAccess.get(clientId);
-            if (account.containsKey("roles")) {
+        if(resourceAccess != null){
+            Map<String,Object> account =  (Map<String,Object>) resourceAccess.get(clientId);
+            if(account.containsKey("roles") ){
                 resourceRoles = (Collection<String>) account.get("roles");
                 allRoles.addAll(resourceRoles);
             }
