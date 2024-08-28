@@ -25,8 +25,6 @@ public class SecurityConfig {
         return httpSecurity
                 .authorizeHttpRequests(auth -> {
                     auth
-                            .requestMatchers("/operator/**").hasRole("OPERATOR")
-                            .requestMatchers("/employee/**").hasRole("EMPLOYEE")
                             .anyRequest().authenticated();
                 })
                 .oauth2Login(oauthlogin -> oauthlogin.successHandler(myAuthSuccessHandler))

@@ -18,13 +18,4 @@ public class HelloController {
         return new ResponseEntity<>("Hello from AnyService", HttpStatus.OK);
     }
 
-    @GetMapping("employee/hello")
-    public ResponseEntity<String> helloEmployee(@AuthenticationPrincipal OAuth2User oauth2User) {
-        return new ResponseEntity<>("Hello from AnyService employee", HttpStatus.OK);
-    }
-
-    @GetMapping("operator/hello")
-    public ResponseEntity<String> helloOperator() {
-        return new ResponseEntity<>("Hello from AnyService operator", HttpStatus.OK);
-    }
 }
