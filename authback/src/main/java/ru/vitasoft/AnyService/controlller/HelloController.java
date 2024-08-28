@@ -3,6 +3,8 @@ package ru.vitasoft.AnyService.controlller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +15,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloController {
     @GetMapping()
     public ResponseEntity<String> auth() {
-        return new ResponseEntity<>("Hello from HelloController", HttpStatus.OK);
+        return new ResponseEntity<>("Hello from AnyService", HttpStatus.OK);
+    }
+
+    @GetMapping("employee/hello")
+    public ResponseEntity<String> helloEmployee(@AuthenticationPrincipal OAuth2User oauth2User) {
+        return new ResponseEntity<>("Hello from AnyService employee", HttpStatus.OK);
+    }
+
+    @GetMapping("operator/hello")
+    public ResponseEntity<String> helloOperator() {
+        return new ResponseEntity<>("Hello from AnyService operator", HttpStatus.OK);
     }
 }
